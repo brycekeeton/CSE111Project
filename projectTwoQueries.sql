@@ -9,13 +9,13 @@ DROP TABLE Pictures;
 
 ----==== ADD TABLES TO THE DATABASE ====----
 
-CREATE TABLE Users (
+CREATE TABLE Users ( -- User Table
     u_username varchar(255),
     u_password varchar (255),
     u_type varchar(255)
 );
 
-CREATE TABLE Recommendation (
+CREATE TABLE Recommendation ( -- Recommendation Table
     rc_username varchar(255),
     rc_recID int,
     rc_gameID int,
@@ -23,7 +23,7 @@ CREATE TABLE Recommendation (
     rc_comments varchar(255)
 );
 
-CREATE TABLE Review (
+CREATE TABLE Review ( -- Review Tables
     r_username varchar(255),
     r_reviewID int,
     r_gameID int,
@@ -32,7 +32,7 @@ CREATE TABLE Review (
     r_comments varchar(255)
 );
 
-CREATE TABLE vgData (
+CREATE TABLE vgData ( -- VideoGames Database Table
     g_gameID int,
     g_name varchar(255),
     g_developer varchar (255),
@@ -42,18 +42,30 @@ CREATE TABLE vgData (
     g_releasedate date
 );
 
-CREATE TABLE Gameplay (
+CREATE TABLE Gameplay ( -- Gamplay Table
     gp_gameID int,
     gp_id int,
     gp_username varchar (255),
     gp_comments varchar(255)
 );
 
-CREATE TABLE Pictures (
+CREATE TABLE Pictures ( -- Pictures Table
     p_gameID varchar(255),
     p_imageID int,
     p_username varchar(255),
     p_comments varchar(255)
+);
+
+CREATE TABLE recommend_user ( -- Many to Many Table (Recommendation to users from other users)
+	ru_username varchar(255),
+	ru_recID int,
+	ru_recommended varchar(255)
+);
+
+CREATE TABLE user_review ( -- Many to Many (Group Reviews from people to other users)
+	ur_usernames varchar(255),
+	ur_reviewID int,
+	ur_overallReview varchar(255)
 );
 
 ----==== INSERT THE DATA INTO THE TABLES ====----
@@ -89,7 +101,17 @@ VALUES (1, "Grand Theft Auto V", "Rockstar", "PC, Xbox, Playstation", "RPG, Acti
 (17, "Portal 2", "Valve", "PC, Mac, Linux, Playstation, Xbox", "Puzzle, Platform", "Rating", "2011-04-18"),
 (18, "Super Mario Odyssey","Nintendo", "Switch", "Platform, Adventure", "Rating", "2017-10-27"),
 (19, "Outer Wilds", "Mobius Digital", "PC, Xbox, Playstation", "Adventure", "Rating", "2019-05-28"),
-(20, "The Last of Us", "Naughty Dog", "Playstation", "Survival, Horror, Action, Adventure", "Rating", "2013-06-14");
+(20, "The Last of Us", "Naughty Dog", "Playstation", "Survival, Horror, Action, Adventure", "Rating", "2013-06-14"),
+(21, "Among Us", "Inner Sloth", "PC, iOS, Android", "Party", "Rating", "2018-06-05"),
+(22, "The Forrest", "Endnight Games", "PC, Playstation","Survival, Horror", "Rating", "2014-05-14"),
+(23, "Mortal Kombat 11", "NeatherRealm", "PC, Xbox, Playstation, Switch, Stadia", "Fighting", "Rating", "2019-04-19"),
+(24, "Crash Bandicoot N. Sane Trilogy", "Vicarious Visions", "Playstation, Xbox, Switch, PC", "Platformer", "Rating", "2017-06-30"),
+(25, "God of War", "SIE Santa Monica", "Playstation", "Action Adventure, Hack and Slash", "Rating",	"2018-04-20"),
+(26, "Stardew Valley", "Concerned Ape", "Xbox, Playstation, PC, Mac, Linux, Switch, Vita, iOS, Andriod", "RPG, Simulation", "Rating", "2016-02-26"),
+(27, "Rocket League", "Psyonix", "Xbox, Playstation, PC, Mac, Linux, Switch", "Sports", "Rating", "2015-07-07"),
+(28, "Cuphead", "Studio MDHR", "PC, Mac, Xbox, Playstation, Switch", "Run and gun", "Rating", "2017-09-29"),
+(29, "Counter Strike: Global Offensive", "Valve", "PC, Mac, Linux, Playstation, Xbox", "FPS", "Rating", "2012-08-21"),
+(30, "Mass Effect 3", "BioWare", "PC, Xbox, Playstation, Wii U", "TPS, Role Playing", "Rating", "2012-03-06");
 
 -- Reviews can be written by more than one User as per the multiple to multiple relationship specified in our Project 1
 INSERT INTO Review (r_username, r_reviewID, r_gameID, r_rating, r_date, r_comments)
@@ -176,7 +198,17 @@ VALUES (1, 1, "GRiMM", "Speed running the Repossession mission"),
 (17, 17, "Bris_Almighty", "The Fall walkthrough"),
 (18, 18, "GRiMM","Defeating Bowser"),
 (19, 19, "BoboCavern","Launch Trailer"),
-(20, 20, "JJuicy","Mini Golf Scene");
+(20, 20, "JJuicy","Mini Golf Scene"),
+(21, 21, "GRiMM", "Imposter gameplay"),
+(22, 22, "BoboCavern", "Killing a whole tribe"),
+(23, 23, "12345","Goro Trolling"),
+(24, 24, "12345", "Platforms meant to kill you"),
+(25, 25, "Teknically","End Scenes"),
+(26, 26, "JJuicy", "Checking out my farm"),
+(27, 27, "Tashi", "Scoring 2 points in 10 seconds"),
+(28, 28, "12345", "Speedrunning"),
+(29, 29, "CeeJay_FC", "Acing the 3rd round"),
+(30, 30, "12345", "Destroying the ships");
 
 INSERT INTO Pictures(p_gameID, p_imageID, p_username, p_comments)
 VALUES (1, 1, "JJuicy", "Flying the jets"),
@@ -198,13 +230,33 @@ VALUES (1, 1, "JJuicy", "Flying the jets"),
 (17, 17, "12345", "Chell artwork"),
 (18, 18, "Tashi","Thank you message"),
 (19, 19, "JJuicy","Riebeck and the Banjo"),
-(20, 20, "JJuicy","Zombie Artwork");
+(20, 20, "JJuicy","Zombie Artwork"),
+(21, 21, "JJuicy", "Paid for suits"),
+(22, 22, "CeeJay_FC", "My village"),
+(23, 23, "GRiMM","Johnny Cage Art"),
+(24, 24, "CeeJay_FC", "Cortex Art"),
+(25, 25, "Tashi","Kratos and the boi"),
+(26, 26, "12345","First House"),
+(27, 27, "GRiMM", "Pimped out car"),
+(28, 28, "12345","Almost Dead"),
+(29, 29, "JJuicy", "Dragon Lore AWP"),
+(30, 30, "Bris_Almighty", "Character created :)");
+
+INSERT INTO recommend_user(ru_username, ru_recID, ru_recommended)
+VALUES ("JJuicy", 4, "No"),
+("BoboCavern", 33, "Yes"),
+("12345", 11, "Yes");
+
+INSERT INTO user_review(ur_usernames, ur_reviewID, ur_overallReview)
+VALUES ("GRiMM", 9, "No"),
+("BoboCavern", 29, "Yes");
 
 ----==== QUERIES FOR PROJECT 2 ====----
 
 -- RECOMMENDATION QUERIES
 ---- SEARCH FOR RECOMMENDATIONS
 ---- EXAMPLES
+
 -- #1: Search for Games reviewed by Bobocavern with an average score of >=3, 
 --    but that bobocavern rated <= 3, for playstation, and released after 2014
 -- USE CASE: Users can query the game database for recommendations
@@ -417,11 +469,22 @@ WHERE g_gameID = r_gameID
 ORDER BY r_date desc
 LIMIT 5;
 
-
-
-
-
-
-
-
-
+--#23: Select users from username table
+SELECT u_username
+FROM Users
+--#24: Get game name from developer Bandai Namco
+Select g_name
+From vgData
+Where g_developer = "Bandai Namco"
+--#25: Count games from developer Bethesda
+Select COUNT(g_gameID)
+From vgData
+Where g_developer = "Bethesda"
+--#26: List all games that can be played on the PC
+SELECT g_name
+FROM vgData
+Where g_platform LIKE "%PC%"
+--#27: View all reviews made in 2018 as well as their comments and game ID's
+SELECT g_gameID, g_name, r_comments
+FROM vgData, Review
+WHERE g_gameID = r_gameID AND r_date BETWEEN "01/01/2018" AND "12/31/2018"

@@ -63,6 +63,171 @@
 		echo("Deleted game from database <br>");
 		unset($db);
 	}
+
+	/*------------------------------------------DIVIDER----------------------------------------------*/
+
+	function addinUsers($username, $password){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "INSERT INTO Users '" . $username . "', '" . $password . "'";
+		$result = $db->query($sql);
+		echo("Added " . $username . " to the database! Thanks for joining!");
+		unset($db);
+	}
+	
+	function viewUsers(){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT u_username FROM Users;";
+		$result = $db->query($sql);
+		
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['u_username'] . "<br>");
+		}
+		echo("</div>");
+	}
+	
+	function deleteUser($username){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "DELETE FROM Users WHERE u_username = " . $username . ";";
+		$result = $db->query($sql);
+		echo("Deleted user from database, sorry to see you go :( <br>");
+		unset($db);
+	}
+
+	/*------------------------------------------DIVIDER----------------------------------------------*/
+	
+	function addinReviews($gameID, $rating, $comments){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "INSERT INTO Review '" . $gameID . "', '" . $rating . "', '" . $comments . "'";
+		$result = $db->query($sql);
+		echo("Added your review to the database!");
+		unset($db);
+	}
+	
+	function viewReviews(){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT r_reviewID, r_gameID, r_rating, r_date, r_comments FROM Review;";
+		$result = $db->query($sql);
+		
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['u_username'] . "<br>");
+		}
+		echo("</div>");
+	}
+	
+	function deleteReview($reviewID){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "DELETE FROM Review WHERE r_reviewID = " . $reviewID . ";";
+		$result = $db->query($sql);
+		echo("Deleted review from database <br>");
+		unset($db);
+	}
+
+	/*------------------------------------------DIVIDER----------------------------------------------*/
+
+	function addinRecommendation($gameID, $status, $comments){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "INSERT INTO Recommendation '" . $gameID . "', '" . $status . "', '" . $comments . "'";
+		$result = $db->query($sql);
+		echo("Added your recommendation to the database!");
+		unset($db);
+	}
+	
+	function viewRecommended(){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT u_username FROM Users;";
+		$result = $db->query($sql);
+		
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['u_username'] . "<br>");
+		}
+		echo("</div>");
+	}
+	
+	function deleteRecommendation($recID){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "DELETE FROM Recommendation WHERE rc_recID = " . $recID . ";";
+		$result = $db->query($sql);
+		echo("Deleted user from database <br>");
+		unset($db);
+	}
+
+	/*------------------------------------------DIVIDER----------------------------------------------*/
+
+	function addinGameplay($gameID, $username, $comments){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "INSERT INTO Gameplay '" . $gameID . "', '" . $username . "', '" . $comments . "'";
+		$result = $db->query($sql);
+		echo("Added your gameplay to the database!");
+		unset($db);
+	}
+	
+	function viewGameplay(){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT u_username FROM Users;";
+		$result = $db->query($sql);
+		
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['u_username'] . "<br>");
+		}
+		echo("</div>");
+	}
+	
+	function deleteGameplay($gameplayID){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "DELETE FROM Gameplay WHERE gp_id = " . $gameplayID . ";";
+		$result = $db->query($sql);
+		echo("Deleted gameplay from database <br>");
+		unset($db);
+	}
+
+	/*------------------------------------------DIVIDER----------------------------------------------*/
+	
+	function addinPhotos($gameID, $username, $comments){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "INSERT INTO Pictures '" . $gameID . "', '" . $username . "', '" . $comments . "'";
+		$result = $db->query($sql);
+		echo("Added your picture to the database!");
+		unset($db);
+	}
+	
+	function viewPhotos(){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT u_username FROM Users;";
+		$result = $db->query($sql);
+		
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['u_username'] . "<br>");
+		}
+		echo("</div>");
+	}
+	
+	function deletePhoto($imageID){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "DELETE FROM Pictures WHERE p_imageID = " . $imageID . ";";
+		$result = $db->query($sql);
+		echo("Deleted user from database<br>");
+		unset($db);
+	}
 	
 	// display all users
 	/*$db = new SQLite3($location);
@@ -108,39 +273,86 @@
 			Game ID: <input type="text" name="gameID">
 			<input type="submit" name="queryType" value="Delete Game">
 		</form>
+		<hr>
+		<form method="post"><b>View Users:</b> <input type="submit" name="queryType" value="View Users"></form>
+		<b>Add User:</b>
+		<form method = "post">
+			Username: <input type="text" name="username"> <br>
+			Password: <input type="password" name="password"> <br>
+			<input type="submit" name="queryType" value="Add User">
+		</form>
+		<b>Delete User</b>
+		<form method = "post">
+			Username: <input type="text" name="username">
+			<input type="submit" name="queryType" value="Delete User">
+		</form>
+		<hr>
+		<form method="post"><b>See Other Reviews:</b> <input type="submit" name="queryType" value="See Reviews"></form>
+		<b>Add A Review!:</b>
+		<form method = "post">
+			Game ID: <input type="text" name="gameID"> <br>
+			<label for="rating">Rating:</label>
+			<select id="rating">
+  			<option value="1">1</option>
+ 			<option value="2">2</option>
+ 			<option value="3">3</option>
+ 			<option value="4">4</option>
+			<option value="5">5</option>
+			</select> <br>
+			Comments: <input type="text" name="comments">
+			<input type="submit" name="queryType" value="Add Review">
+		</form>
+		<b>Delete Your Review</b>
+		<form method = "post">
+			Review ID: <input type="text" name="Review">
+			<input type="submit" name="queryType" value="Delete Review">
+		</form>
+		<hr>
+		<form method="post"><b>See Recommendations:</b> <input type="submit" name="queryType" value="See Recommendations"></form>
+		<b>Add A Recommendation!:</b>
+		<form method = "post">
+			Game ID: <input type="text" name="gameID"> <br>
+			<label for="status">Status of Game Reviewing?:</label>
+			<select id="status">
+  			<option value="1">Unplayed</option>
+ 			<option value="2">In Progress</option>
+ 			<option value="3">Finished</option>
+			</select> <br>
+			Comments: <input type="text" name="comments">
+			<input type="submit" name="queryType" value="Add Recommendation">
+		</form>
+		<b>Delete Your Recommendation</b>
+		<form method = "post">
+			Recommendation ID: <input type="text" name="recommendation">
+			<input type="submit" name="queryType" value="Delete recommendation">
+		</form>
+		<hr>
+		<form method="post"><b>See Cool Gameplay!</b> <input type="submit" name="queryType" value="See Gameplay"></form>
+		<b>Add Your Gameplay!:</b>
+		<form method = "post">
+			Game ID: <input type="text" name="gameID"> <br>
+			Your Username: <input type="text" name="username"> <br>
+			Comments: <input type="text" name="comments">
+			<input type="submit" name="queryType" value="Add Gameplay">
+		</form>
+		<b>Delete Your Gameplay</b>
+		<form method = "post">
+			Gameplay ID: <input type="text" name="gameplay">
+			<input type="submit" name="queryType" value="Delete Gameplay">
+		</form>
+		<hr>
+		<form method="post"><b>Check Out Photos:</b> <input type="submit" name="queryType" value="See Pictures"></form>
+		<b>Add A Photo:</b>
+		<form method = "post">
+			Game ID: <input type="text" name="gameID"> <br>
+			Your Username: <input type="text" name="username"> <br>
+			Comments: <input type="text" name="comments"> <br>
+			<input type="submit" name="queryType" value="Add Photo">
+		</form>
+		<b></b>
+		<form method = "post">
+			Picture ID: <input type="text" name="photo">
+			<input type="submit" name="queryType" value="Delete Photo">
+		</form>
 	</body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

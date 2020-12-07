@@ -223,6 +223,18 @@
 		unset($db);
 	}
 	
+		/*------------------------------------------DIVIDER----------------------------------------------*/
+
+		function addcollabReview($reviewID, $gameName, $rating, $comments, $username, $password){
+			$location = 'data.sqlite';
+			$db = new SQLite3($location);
+			$sql = "INSERT INTO  '" . $gameID . "', '" . $username . "', '" . $comments . "'";
+			$result = $db->query($sql);
+			echo("Added your gameplay to the database!");
+			unset($db);
+		}
+		
+		
 ?>
 
 <html>
@@ -288,6 +300,25 @@
 			Password: <input type="password" name="password"><br>
 			<input type="submit" name="queryType" value="Delete Review">
 		</form></td></tr></table>
+		<hr>
+		<table width=975px><tr><td>
+		<b>Contribute to a friends Review!:</b>
+		<form method = "post">
+			Friend's Review ID: <input type = text name = "reviewID"> <br>
+			Game Name: <input type="text" name="gameName"> <br>
+			<label for="rating">Rating:</label>
+			<select id="rating" name="rating">
+  			<option value="1">1</option>
+ 			<option value="2">2</option>
+ 			<option value="3">3</option>
+ 			<option value="4">4</option>
+			<option value="5">5</option>
+			</select> <br>
+			Comments: <br><textarea name="comments"></textarea><br>
+			Username: <input type="text" name="username"><br>
+			Password: <input type="password" name="password"><br>
+			<input type="submit" name="queryType" value="Contribute to Review">
+		</form></td><td></table>
 		
 		<hr>
 		<form method="post"><b>See Cool Gameplay!</b> <input type="submit" name="queryType" value="See Gameplay"></form>

@@ -44,6 +44,9 @@
 			case "Delete Photo":
 				deletePhoto($_POST['photo']);
 				break;
+			case "See Reviews":
+				viewReviews();
+				break;
 		}
 	}
 	
@@ -155,6 +158,19 @@
 		unset($db);
 		
 	}
+
+	function viewReviews(){
+		$location = '../data.sqlite';
+		$db = new SQLite3($location);
+		$sql = "SELECT ur_username, r_reviewID, r_gameID, r_rating, r_date, r_comments FROM User_Review, Review WHERE ur_reviewID = r_reviewID ORDER BY r_reviewID;";
+		$result = $db->query($sql);
+		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
+		while($row = $result->fetchArray(SQLITE3_ASSOC)){
+			echo($row['ur_username'] . ": ReviewID :". $row['r_reviewID'] ." Rating :" . $row['r_rating'] . " | " . $row['r_date'] . "<br> Comments: ". $row['r_comments'] ."<br>");
+		}
+		echo("</div>");
+// 			echo(": " . $row['r_date'] . "/ Score: <b>" . $row['r_rating'] . "</b></u><br>" . $row['r_comments'] . "<br><br>");
+	}
 	
 	
 	/*------------------------------------------DIVIDER----------------------------------------------*/
@@ -225,16 +241,16 @@
 	
 		/*------------------------------------------DIVIDER----------------------------------------------*/
 
-		function addcollabReview($reviewID, $gameName, $rating, $comments, $username, $password){
+/*		function addcollabReview($reviewID, $gameID, $rating, $comments, $username){
 			$location = 'data.sqlite';
 			$db = new SQLite3($location);
-			$sql = "INSERT INTO  '" . $gameID . "', '" . $username . "', '" . $comments . "'";
+			$sql = "INSERT INTO Review SELECT theMax + 1 " . $gameID . "', '" . $rating . "', '" . $username . "', '" . $comments . "' ";
 			$result = $db->query($sql);
 			echo("Added your gameplay to the database!");
 			unset($db);
 		}
-		
-		
+// "INSERT INTO Review SELECT theMax+1, gid, " . $rating . ", substr(DATETIME('now'), 0, 11), '" . $comments . "' FROM (SELECT max(r_reviewID) as theMax FROM Review), (SELECT g_gameID as gid FROM vgData WHERE g_name = '" . $gameName . "');";		
+*/
 ?>
 
 <html>
@@ -275,7 +291,7 @@
 			<input type="submit" name="queryType" value="Delete Game">
 		</form></td></tr></table>
 		<hr>
-		
+		<form method="post"><b>See Other Reviews:</b> <input type="submit" name="queryType" value="See Reviews"></form>
 		<table width=975px><tr><td>
 		<b>Add A Review!:</b>
 		<form method = "post">
@@ -305,7 +321,7 @@
 		<b>Contribute to a friends Review!:</b>
 		<form method = "post">
 			Friend's Review ID: <input type = text name = "reviewID"> <br>
-			Game Name: <input type="text" name="gameName"> <br>
+			Game ID: <input type="text" name="gameID"> <br>
 			<label for="rating">Rating:</label>
 			<select id="rating" name="rating">
   			<option value="1">1</option>
@@ -316,7 +332,6 @@
 			</select> <br>
 			Comments: <br><textarea name="comments"></textarea><br>
 			Username: <input type="text" name="username"><br>
-			Password: <input type="password" name="password"><br>
 			<input type="submit" name="queryType" value="Contribute to Review">
 		</form></td><td></table>
 		

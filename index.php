@@ -22,7 +22,7 @@
 
 	}
 
-	function rdmQuery($rdmQuery){
+/*	function rdmQuery($rdmQuery){
 		$location = 'data.sqlite';
 		$db = new SQLite3($location);
 		$sql = '" . $rdmQuery . "'
@@ -30,7 +30,7 @@
 		echo("Here ya go!");
 		unset($db);
 	}
-
+*/ 
 	// close database
 ?>
 

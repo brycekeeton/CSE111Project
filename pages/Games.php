@@ -169,7 +169,6 @@
 			echo($row['ur_username'] . ": ReviewID :". $row['r_reviewID'] ." Rating :" . $row['r_rating'] . " | " . $row['r_date'] . "<br> Comments: ". $row['r_comments'] ."<br>");
 		}
 		echo("</div>");
-// 			echo(": " . $row['r_date'] . "/ Score: <b>" . $row['r_rating'] . "</b></u><br>" . $row['r_comments'] . "<br><br>");
 	}
 	
 	
@@ -183,6 +182,8 @@
 		echo("Added your gameplay to the database!");
 		unset($db);
 	}
+	//'" . $name . "'
+// "INSERT INTO vgData SELECT theMax + 1, '" . $name . "', '" . $developer . "', '" . $platform . "', '" . $genre . "', 'Rating', '" . $release . "' FROM (SELECT max(g_gameID) as theMax FROM vgData);";
 	
 	function viewGameplay(){
 		$location = '../data.sqlite';
@@ -234,22 +235,12 @@
 		$db = new SQLite3($location);
 		$sql = "DELETE FROM Pictures WHERE p_imageID = " . $imageID . ";";
 		$result = $db->query($sql);
-		echo("Deleted user from database<br>");
+		echo("Deleted picture from database<br>");
 		unset($db);
 	}
 	
 		/*------------------------------------------DIVIDER----------------------------------------------*/
-
-/*		function addcollabReview($reviewID, $gameID, $rating, $comments, $username){
-			$location = 'data.sqlite';
-			$db = new SQLite3($location);
-			$sql = "INSERT INTO Review SELECT theMax + 1 " . $gameID . "', '" . $rating . "', '" . $username . "', '" . $comments . "' ";
-			$result = $db->query($sql);
-			echo("Added your gameplay to the database!");
-			unset($db);
-		}
-// "INSERT INTO Review SELECT theMax+1, gid, " . $rating . ", substr(DATETIME('now'), 0, 11), '" . $comments . "' FROM (SELECT max(r_reviewID) as theMax FROM Review), (SELECT g_gameID as gid FROM vgData WHERE g_name = '" . $gameName . "');";		
-*/
+		
 ?>
 
 <html>
@@ -367,36 +358,3 @@
 	</body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

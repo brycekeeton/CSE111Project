@@ -27,7 +27,7 @@
 				deleteReview($_POST['Review'], $_POST['username'], $_POST['password']);
 				break;
 			case "Add Gameplay":
-				addinGameplay($_POST['gameID'], $_POST['username'], $_POST['comments']);
+				//addinGameplay($_POST['gameName'], $_POST['username'], $_POST['comments']);
 				break;
 			case "See Gameplay":
 				viewGameplay();
@@ -36,7 +36,7 @@
 				deleteGameplay($_POST['gameplay']);
 				break;
 			case "Add Photo":
-				addinPhotos($_POST['gameID'], $_POST['username'], $_POST['comments']);
+				//addinPhotos($_POST['gameName'], $_POST['username'], $_POST['comments'], $_FILES["uploadFile"]["name"]);
 				break;
 			case "See Pictures":
 				viewPhotos();
@@ -123,15 +123,26 @@
 	
 	function addinReviews($gameName, $rating, $comments, $username, $password){
 		$location = '../data.sqlite';
+		$authenticate = false;
+		$allUsers = explode(", ", $username);
 		
-		if((authenticateUser($username, $password, 'Any', '../data.sqlite')) == true){
+		for($i = 0; $i < sizeOf($allUsers); $i ++){
+			if((authenticateUser($allUsers[$i], $password, 'Any', '../data.sqlite')) == true){
+				$authenticate = true;
+				break;
+			}
+		}
+		
+		if($authenticate == true){
 			$db = new SQLite3($location);
 			
 			$sql = "INSERT INTO Review SELECT theMax+1, gid, " . $rating . ", substr(DATETIME('now'), 0, 11), '" . $comments . "' FROM (SELECT max(r_reviewID) as theMax FROM Review), (SELECT g_gameID as gid FROM vgData WHERE g_name = '" . $gameName . "');";
-			$sqlUserAdd = "INSERT INTO User_Review SELECT '" . $username . "', theMax FROM (SELECT max(r_reviewID) as theMax FROM Review);";
-			
 			$result = $db->query($sql);
-			$resultAdd = $db->query($sqlUserAdd);
+			
+			for($i = 0; $i < sizeOf($allUsers); $i ++){
+				$sqlUserAdd = "INSERT INTO User_Review SELECT '" . $allUsers[$i] . "', theMax FROM (SELECT max(r_reviewID) as theMax FROM Review);";
+				$resultAdd = $db->query($sqlUserAdd);
+			}
 			
 			echo("Added your review to the database!");
 			unset($db);
@@ -174,10 +185,10 @@
 	
 	/*------------------------------------------DIVIDER----------------------------------------------*/
 
-	function addinGameplay($gameID, $username, $comments){
+	function addinGameplay($gameName, $username, $comments){
 		$location = '../data.sqlite';
 		$db = new SQLite3($location);
-		$sql = "INSERT INTO Gameplay '" . $gameID . "', '" . $username . "', '" . $comments . "'";
+		$sql = "INSERT INTO Gameplay SELECT g_gameID, theMax+1, '" . $username . "', '" . $comment . "' FROM vgData, (SELECT max(gp_id) as theMax FROM Gameplay) WHERE g_name = '" . $gameName . "';";
 		$result = $db->query($sql);
 		echo("Added your gameplay to the database!");
 		unset($db);
@@ -192,7 +203,8 @@
 		$result = $db->query($sql);
 		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
 		while($row = $result->fetchArray(SQLITE3_ASSOC)){
-			echo("Game ID: " . $row['gp_gameID'] . " | " .  $row['gp_id'] . " | " . $row['gp_username'] . " | " . $row['gp_comments'] ."<br>");
+			//echo("Game ID: " . $row['gp_gameID'] . " | " .  $row['gp_id'] . " | " . $row['gp_username'] . " | " . $row['gp_comments'] ."<br>");
+			echo("<a href='../gameplay/" . $row['gp_gameID'] . ".gif' target='_blank'> " . $row['gp_gameID'] . ": " . $row['gp_comments'] . "</a><br>");
 		}
 		echo("</div>");
 	}
@@ -208,24 +220,20 @@
 
 	/*------------------------------------------DIVIDER----------------------------------------------*/
 	
-	function addinPhotos($gameID, $username, $comments){
-		$location = '../data.sqlite';
-		$db = new SQLite3($location);
-		$sql = "INSERT INTO Pictures '" . $gameID . "', '" . $username . "', '" . $comments . "'";
-		$result = $db->query($sql);
-		echo("Added your picture to the database!");
-		unset($db);
+	function addinPhotos($gameName, $username, $comments, $theFile){
+		
 	}
 	
 	function viewPhotos(){
 		$location = '../data.sqlite';
 		$db = new SQLite3($location);
-		$sql = "SELECT * FROM Pictures;";
+		$sql = "SELECT * FROM Pictures, vgData WHERE g_gameID = p_gameID ORDER BY p_imageID asc;";
 		$result = $db->query($sql);
 		
 		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
 		while($row = $result->fetchArray(SQLITE3_ASSOC)){
-			echo("Picture ID: " . $row['p_gameID'] . " | " . $row['p_imageID'] . " | " . $row['p_username'] . " | " . $row['p_comments'] . "<br>");
+			//echo("Picture ID: " . $row['p_gameID'] . " | " . $row['p_imageID'] . " | " . $row['p_username'] . " | " . $row['p_comments'] . "<br>");
+			echo("<a href='../images/" . $row['p_imageID'] . ".jpg' target='_blank'> " . $row['p_imageID'] . ": " . $row['p_username'] . " - " . $row['p_comments'] . " (" . $row['g_name'] . ")</a><br>");
 		}
 		echo("</div>");
 	}
@@ -282,9 +290,9 @@
 		</form></td></tr></table>
 		<hr>
 		<form method="post"><b>See Other Reviews:</b> <input type="submit" name="queryType" value="See Reviews"></form>
-		<table width=975px><tr><td>
+		<table width=800px><tr><td>
 		<b>Add A Review!:</b>
-		<form method = "post">
+		<form method = "post" id="review">
 			Game Name: <input type="text" name="gameName"> <br>
 			<label for="rating">Rating:</label>
 			<select id="rating" name="rating">
@@ -295,10 +303,11 @@
 			<option value="5">5</option>
 			</select> <br>
 			Comments: <br><textarea name="comments"></textarea><br>
-			Username: <input type="text" name="username"><br>
-			Password: <input type="password" name="password"><br>
+			Username (comma-separated list): <input type="text" name="username"><br>
+			Password (only one person's): <input type="password" name="password"><br>
 			<input type="submit" name="queryType" value="Add Review">
-		</form></td><td>
+		</form>
+		</td><td>
 		<b>Delete Your Review</b>
 		<form method = "post">
 			Review ID: <input type="text" name="Review"><br>
@@ -306,53 +315,40 @@
 			Password: <input type="password" name="password"><br>
 			<input type="submit" name="queryType" value="Delete Review">
 		</form></td></tr></table>
-		<hr>
-		<table width=975px><tr><td>
-		<b>Contribute to a friends Review!:</b>
-		<form method = "post">
-			Friend's Review ID: <input type = text name = "reviewID"> <br>
-			Game ID: <input type="text" name="gameID"> <br>
-			<label for="rating">Rating:</label>
-			<select id="rating" name="rating">
-  			<option value="1">1</option>
- 			<option value="2">2</option>
- 			<option value="3">3</option>
- 			<option value="4">4</option>
-			<option value="5">5</option>
-			</select> <br>
-			Comments: <br><textarea name="comments"></textarea><br>
-			Username: <input type="text" name="username"><br>
-			<input type="submit" name="queryType" value="Contribute to Review">
-		</form></td><td></table>
 		
 		<hr>
+		<table width=975px><tr><td>
 		<form method="post"><b>See Cool Gameplay!</b> <input type="submit" name="queryType" value="See Gameplay"></form>
 		<b>Add Your Gameplay!:</b>
-		<form method = "post">
-			Game ID: <input type="text" name="gameID"> <br>
+		<form action="upload.php" method = "post" enctype="multipart/form-data">
+			Name of Game: <input type="text" name="gameName"> <br>
 			Your Username: <input type="text" name="username"> <br>
-			Comments: <input type="text" name="comments">
+			Comments: <input type="text" name="comments"> <br>
+			Upload Gameplay: <input type="file" name="file" size="5000" /> <br>
 			<input type="submit" name="queryType" value="Add Gameplay">
 		</form>
-		<b>Delete Your Gameplay</b>
+		<b>Delete Gameplay</b>
 		<form method = "post">
 			Gameplay ID: <input type="text" name="gameplay">
 			<input type="submit" name="queryType" value="Delete Gameplay">
 		</form>
-		<hr>
+		</td><td>
 		<form method="post"><b>Check Out Photos:</b> <input type="submit" name="queryType" value="See Pictures"></form>
 		<b>Add A Photo:</b>
-		<form method = "post">
-			Game ID: <input type="text" name="gameID"> <br>
+		<form action="upload.php" method = "post" enctype="multipart/form-data">
+			Name of Game: <input type="text" name="gameName"> <br>
 			Your Username: <input type="text" name="username"> <br>
 			Comments: <input type="text" name="comments"> <br>
+			
+			Upload an Image: <input type="file" name="file" size="50" /> <br>
+			
 			<input type="submit" name="queryType" value="Add Photo">
 		</form>
-		<b></b>
+		<b>Delete Photo:</b>
 		<form method = "post">
 			Picture ID: <input type="text" name="photo">
 			<input type="submit" name="queryType" value="Delete Photo">
-		</form>
+		</form></td></tr></table>
 		[<a href="../index.php">Home Page</a>]
 		
 	</body>

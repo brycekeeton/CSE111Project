@@ -89,7 +89,7 @@
 			Password: <input type="password" name="password"> <br>
 			<input type="submit" name="queryType" value="Add User">
 		</form>
-		<b>Kill Someone:</b>
+		<b>Delete Account:</b>
 		<form method = "post">
 			Their Username: <input type="text" name="usernameToDelete"> <br>
 			Your Username: <input type="text" name="usernameOfDeleter"> <br>
@@ -100,21 +100,6 @@
 		[<a href="../index.php">Home Page</a>]
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

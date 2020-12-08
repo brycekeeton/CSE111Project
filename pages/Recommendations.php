@@ -12,7 +12,7 @@
 				viewRecommended();
 				break;
 			case "Delete Recommendation":
-				deleteRecommendation($_POST['recommendation']);
+				deleteRecommendation($_POST['recID']);
 				break;
 		}
 	}
@@ -45,10 +45,9 @@
 		$db = new SQLite3($location);
 		$sql = "DELETE FROM Recommendation WHERE rc_recID = " . $recID . ";";
 		$result = $db->query($sql);
-		echo("Deleted recommendation from database <br>");
+		echo("Deleted recommendation from database<br>");
 		unset($db);
 	}
-
 ?>
 
 <html>
@@ -72,9 +71,9 @@
 		</form>
 		<b>Delete Your Recommendation</b>
 		<form method = "post">
-			Recommendation ID: <input type="text" name="recID">
-			<input type="submit" name="queryType" value="Delete recommendation">
-		</form>
+			Recommendation ID: <input type="text" name="recID"><br>
+			<input type="submit" name="queryType" value="Delete Recommendation">
+		</form></td></tr></table>
 	
 	
 	

@@ -176,7 +176,7 @@
 	/*------------------------------------------DIVIDER----------------------------------------------*/
 
 	function addinGameplay($gameID, $username, $comments){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
 		$sql = "INSERT INTO Gameplay '" . $gameID . "', '" . $username . "', '" . $comments . "'";
 		$result = $db->query($sql);
@@ -185,20 +185,19 @@
 	}
 	
 	function viewGameplay(){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
-		$sql = "SELECT u_username FROM Users;";
+		$sql = "SELECT * FROM Gameplay;";
 		$result = $db->query($sql);
-		
 		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
 		while($row = $result->fetchArray(SQLITE3_ASSOC)){
-			echo($row['u_username'] . "<br>");
+			echo("Game ID: " . $row['gp_gameID'] . " | " .  $row['gp_id'] . " | " . $row['gp_username'] . " | " . $row['gp_comments'] ."<br>");
 		}
 		echo("</div>");
 	}
 	
 	function deleteGameplay($gameplayID){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
 		$sql = "DELETE FROM Gameplay WHERE gp_id = " . $gameplayID . ";";
 		$result = $db->query($sql);
@@ -209,7 +208,7 @@
 	/*------------------------------------------DIVIDER----------------------------------------------*/
 	
 	function addinPhotos($gameID, $username, $comments){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
 		$sql = "INSERT INTO Pictures '" . $gameID . "', '" . $username . "', '" . $comments . "'";
 		$result = $db->query($sql);
@@ -218,20 +217,20 @@
 	}
 	
 	function viewPhotos(){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
-		$sql = "SELECT u_username FROM Users;";
+		$sql = "SELECT * FROM Pictures;";
 		$result = $db->query($sql);
 		
 		echo("<div width=500 height=200 style='overflow-y=\'auto\''>");
 		while($row = $result->fetchArray(SQLITE3_ASSOC)){
-			echo($row['u_username'] . "<br>");
+			echo("Picture ID: " . $row['p_gameID'] . " | " . $row['p_imageID'] . " | " . $row['p_username'] . " | " . $row['p_comments'] . "<br>");
 		}
 		echo("</div>");
 	}
 	
 	function deletePhoto($imageID){
-		$location = 'data.sqlite';
+		$location = '../data.sqlite';
 		$db = new SQLite3($location);
 		$sql = "DELETE FROM Pictures WHERE p_imageID = " . $imageID . ";";
 		$result = $db->query($sql);

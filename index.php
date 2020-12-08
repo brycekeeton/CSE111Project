@@ -14,7 +14,23 @@
 	}
 	echo '<br><br>';*/
 	
-	
+	if($_SERVER["REQUEST_METHOD"] == "POST"){
+		echo('<u>Query: <b>' . $_POST['queryType'] . '</b></u><br>');
+		 if($_POST['querytype'] == "Search Query")
+		 	rdmQuery($_POST['rdmQuery']);
+		else;
+
+	}
+
+	function rdmQuery($rdmQuery){
+		$location = 'data.sqlite';
+		$db = new SQLite3($location);
+		$sql = '" . $rdmQuery . "'
+		$result = $db->query($sql);
+		echo("Here ya go!");
+		unset($db);
+	}
+
 	// close database
 ?>
 
@@ -39,40 +55,9 @@
 		<tr><td><b>Generate and View Recommendations:</b></td><td> [<a href="pages/Recommendations.php">Recommendation Page</a>]
 		<br></td></tr></table>
 		
+		Have a query in mind already? Input it here! <input type="text" name="rdmQuery"> <br>
+		<input type="submit" name="queryType" value= "Search Query">
 		
 	</body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
